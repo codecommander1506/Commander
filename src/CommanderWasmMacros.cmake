@@ -1,0 +1,26 @@
+include(${CMAKE_CURRENT_LIST_DIR}/CommanderWasmSupport.cmake)
+
+function(commander_add_wasm_executable name)
+    add_executable(${name} ${ARGN})
+
+    unset(soptions)
+    list(APPEND soptions WASM=1)
+    list(APPEND soptions FULL_ES2=1)
+    list(APPEND soptions FULL_ES3=1)
+    list(APPEND soptions USE_WEBGL2=1)
+    list(APPEND soptions EXIT_RUNTIME=1)
+    list(APPEND soptions ERROR_ON_UNDEFINED_SYMBOLS=1)
+    list(APPEND soptions EXTRA_EXPORTED_RUNTIME_METHODS=[\"UTF16ToString\",\"stringToUTF16\"])
+    list(APPEND soptions FETCH=1)
+    list(APPEND soptions ASSERTIONS=2)
+    list(APPEND soptions DEMANGLE_SUPPORT=1)
+    list(APPEND soptions GL_DEBUG=1)
+    list(APPEND soptions ALLOW_MEMORY_GROWTH=1)
+    list(TRANSFORM soptions PREPEND "SHELL:-s ")
+
+    target_link_options(${name} PRIVATE ${soptions} --bind -g4 --profiling-funcs --source-map-base http://localhost:8000/)
+endfunction()
+
+function(commander_add_wasm_library name)
+    add_library(${name} STATIC ${ARGN})
+endfunction()

@@ -1,0 +1,20 @@
+@PACKAGE_INIT@
+
+set(Commander_DIR @PACKAGE_SOME_INSTALL_DIR@)
+set(Commander_COMPONENTS @Commander_COMPONENTS@)
+
+include(${CMAKE_CURRENT_LIST_DIR}/CommanderTargets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/CommanderMacros.cmake)
+
+foreach (component ${Commander_FIND_COMPONENTS})
+    if (${component} IN_LIST Commander_COMPONENTS)
+        include(${CMAKE_CURRENT_LIST_DIR}/Commander${component}Macros.cmake)
+    else()
+        if (Commander_FIND_REQUIRED_${component})
+            set(mode FATAL_ERROR)
+        else()
+            set(mode WARNING)
+        endif()
+        message(${mode} "Commander${component} not found")
+    endif()
+endforeach()
